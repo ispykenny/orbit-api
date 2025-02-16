@@ -12,14 +12,13 @@ export const authValidation = (): MiddlewareHandler => {
     const token = authHeader?.split(' ')[1];
     if (!token) return context.json({ status: 'unauthorized' }, 401);
 
-    jwt.verify(
-      token,
-      process.env.ACCESS_SECRET as string,
-      async (err, decoded) => {
-        if (err) return context.json({ status: 'unauthorized' }, 401);
-        context.set('user', decoded);
-        await next();
-      }
-    );
+    try {
+      const decoded = jwt.verify(token, process.env.ACCESS_SECRET as string);
+      context.set('user', decoded);
+      await next();
+    } catch (err) {
+      console.log(err);
+      return context.json({ status: 'unauthorized' }, 401);
+    }
   };
 };
