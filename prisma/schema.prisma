@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,10 +7,56 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
+// TODO: Clean up schema
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
+  password     String
+  hasDexcom    Boolean      @default(false)
+  tokens       Token[]
+  dexcomTokens DexcomToken?
+  readings     Readings[]
 }
 
+model Token {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model DexcomToken {
+  id                    Int      @id @default(autoincrement())
+  accessToken           String   @db.Text
+  refreshToken          String   @unique
+  expiresIn             Int
+  createdAt             DateTime @default(now())
+  userId                Int      @unique
+  transmitterGeneration String   @default("")
+  user                  User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Readings {
+  id                    Int     @id @default(autoincrement())
+  displayDevice         String?
+  displayTime           String
+  systemTime            String
+  recordId              String  @unique
+  transmitterGeneration String
+  transmitterId         String
+  transmitterTicks      Int
+  trend                 String
+  trendRate             Float
+  unit                  String
+  value                 Int
+  rateUnit              String
+  userId                Int
+  user                  User    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
