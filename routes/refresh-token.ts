@@ -19,7 +19,7 @@ app.post('/', async (context: Context) => {
     return new Promise((resolve) => {
       jwt.verify(
         refresh_token,
-        process.env.REFRESH_SECRET as string,
+        Bun.env.REFRESH_SECRET as string,
         async (err: any, user: any) => {
           if (err) {
             resolve(context.json({ status: 'unauthorized' }, 401));

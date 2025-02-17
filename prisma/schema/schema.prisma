@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
@@ -7,16 +8,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// TODO: Clean up schema
 model User {
   id           Int          @id @default(autoincrement())
   email        String       @unique
   password     String
   hasDexcom    Boolean      @default(false)
-  tokens       Token[]
   dexcomTokens DexcomToken?
   readings     Readings[]
   records      Record[]
+  tokens       Token[]
 }
 
 model Token {
@@ -31,7 +31,7 @@ model Token {
 
 model DexcomToken {
   id                    Int      @id @default(autoincrement())
-  accessToken           String   @db.Text
+  accessToken           String
   refreshToken          String   @unique
   expiresIn             Int
   createdAt             DateTime @default(now())
@@ -58,16 +58,6 @@ model Readings {
   rateUnit              String
   userId                Int
   user                  User    @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-}
-
-model Record {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  userId    Int
-  message   String
-  user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
