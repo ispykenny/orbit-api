@@ -8,10 +8,6 @@ app.post('/', async (context: Context) => {
   const user = context.get('user');
   const { message } = await context.req.json();
 
-  if (!user) {
-    return context.json({ status: 'unauthorized' }, 401);
-  }
-
   await prismaDB.record.create({
     data: {
       message,
