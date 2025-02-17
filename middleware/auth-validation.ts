@@ -1,10 +1,10 @@
 import type { MiddlewareHandler } from 'hono';
 import jwt from 'jsonwebtoken';
+import { prismaDB } from '../helpers/prisma';
 
-const userObject = {
-  name: 'kenny',
-  age: 35,
-};
+interface JWTPayload {
+  email: string;
+}
 
 export const authValidation = (): MiddlewareHandler => {
   return async (context, next) => {
@@ -13,11 +13,24 @@ export const authValidation = (): MiddlewareHandler => {
     if (!token) return context.json({ status: 'unauthorized' }, 401);
 
     try {
-      const decoded = jwt.verify(token, process.env.ACCESS_SECRET as string);
-      context.set('user', decoded);
+      const decoded = jwt.verify(
+        token,
+        process.env.ACCESS_SECRET as string
+      ) as JWTPayload;
+      if (!decoded || !decoded.email)
+        return context.json({ status: 'unauthorized' }, 401);
+      const user = await prismaDB.user.findUnique({
+        where: {
+          email: decoded.email,
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!user) return context.json({ status: 'unauthorized' }, 401);
+      context.set('user', user);
       await next();
     } catch (err) {
-      console.log(err);
       return context.json({ status: 'unauthorized' }, 401);
     }
   };

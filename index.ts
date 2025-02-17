@@ -1,13 +1,12 @@
 import { Hono } from 'hono';
 import index from './routes/index';
-import user from './routes/user';
 import { authValidation } from './middleware/auth-validation';
+import auth from './routes/auth';
 
 const app = new Hono();
 
 app.use('/auth/*', authValidation());
-
-app.route('/auth/user', user);
+app.route('/auth', auth);
 app.route('/', index);
 
 Bun.serve({

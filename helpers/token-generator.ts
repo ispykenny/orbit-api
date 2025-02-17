@@ -12,10 +12,9 @@ const generateAccessToken = (user: User) => {
   });
 };
 
-// Generate a Refresh Token with a longer expiration time
 const generateRefreshToken = (user: User) => {
   return jwt.sign(user, process.env.REFRESH_SECRET || '', {
-    expiresIn: '7d',
+    expiresIn: '365d',
   });
 };
 

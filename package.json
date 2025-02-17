@@ -3,11 +3,13 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run --watch index.ts"
+    "dev": "bun run --watch index.ts",
+    "cleanup": "bun run helpers/cleanup-old-tokens.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/jsonwebtoken": "^9.0.8"
+    "@types/jsonwebtoken": "^9.0.8",
+    "@types/node-cron": "^3.0.11"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
@@ -17,6 +19,7 @@
     "hono": "^4.7.1",
     "init": "^0.1.2",
     "jsonwebtoken": "^9.0.2",
+    "node-cron": "^3.0.3",
     "prisma": "^6.3.1"
   }
 }

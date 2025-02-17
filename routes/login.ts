@@ -10,7 +10,10 @@ app.post('/', async (context: Context) => {
   try {
     const user = await prismaDB.user.findUnique({ where: { email } });
     if (!user || !(await Bun.password.verify(password, user.password))) {
-      return context.json({ message: 'Incorrect email or password' });
+      return context.json({
+        status: 401,
+        data: { message: 'Incorrect email or password' },
+      });
     }
 
     const accessToken = generateAccessToken({ email });
@@ -27,7 +30,7 @@ app.post('/', async (context: Context) => {
   } catch (error) {
     return context.json({
       status: 500,
-      message: 'Error signing in',
+      data: { message: 'Error signing in' },
     });
   }
 });

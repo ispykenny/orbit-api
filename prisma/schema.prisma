@@ -16,6 +16,7 @@ model User {
   tokens       Token[]
   dexcomTokens DexcomToken?
   readings     Readings[]
+  records      Record[]
 }
 
 model Token {
@@ -57,6 +58,16 @@ model Readings {
   rateUnit              String
   userId                Int
   user                  User    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Record {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  message   String
+  user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }

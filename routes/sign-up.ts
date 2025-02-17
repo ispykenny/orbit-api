@@ -1,5 +1,10 @@
 import { Hono, type Context } from 'hono';
 import { prismaDB } from '../helpers/prisma';
+import {
+  validateEmail,
+  validatePassword,
+  validAuthUser,
+} from '../helpers/credential';
 
 const app = new Hono();
 
@@ -9,7 +14,17 @@ app.post('/', async (context: Context) => {
   if (!email || !password) {
     return context.json({
       status: 400,
-      message: 'Email and password are required',
+      data: { message: 'Email and password are required' },
+    });
+  }
+  const errors = validAuthUser(email, password);
+
+  // is valid email
+  // valid password with atleast 8 characters
+  if (errors.email || errors.password) {
+    return context.json({
+      status: 400,
+      data: errors,
     });
   }
 
@@ -24,18 +39,18 @@ app.post('/', async (context: Context) => {
     });
     return context.json({
       status: 200,
-      message: 'User created',
+      data: { message: 'User created' },
     });
   } catch (error: any) {
     if (error.code === 'P2002') {
       return context.json({
         status: 400,
-        message: 'A user with this email already exists',
+        data: { message: 'A user with this email already exists' },
       });
     }
     return context.json({
       status: 500,
-      message: 'Error creating user',
+      data: { message: 'Error creating user' },
     });
   }
 });

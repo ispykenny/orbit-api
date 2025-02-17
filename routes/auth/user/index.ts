@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import type { Context } from 'hono';
-import { prismaDB } from '../../helpers/prisma';
+import { prismaDB } from '../../../helpers/prisma';
 const app = new Hono();
 
 async function getUser(context: Context) {
@@ -11,7 +11,7 @@ async function getUser(context: Context) {
 
   const dbUser = await prismaDB.user.findUnique({
     where: {
-      email: user.email,
+      id: user.id,
     },
     select: {
       email: true,
@@ -24,7 +24,9 @@ async function getUser(context: Context) {
 
 app.get('/', async (context: Context) => {
   const user = await getUser(context);
-
+  if (!user) {
+    return context.json({ status: 'unauthorized' }, 401);
+  }
   return context.json({
     user,
   });
