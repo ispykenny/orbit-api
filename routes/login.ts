@@ -1,9 +1,9 @@
-import { Hono, type Context } from 'hono';
-import { prismaDB } from '../helpers/prisma';
+import { prismaDB } from '@/helpers/prisma';
 import {
   generateAccessToken,
   generateRefreshToken,
-} from '../helpers/token-generator';
+} from '@/helpers/token-generator';
+import { Hono, type Context } from 'hono';
 
 const app = new Hono();
 

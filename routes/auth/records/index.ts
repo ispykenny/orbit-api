@@ -1,6 +1,6 @@
-import { Hono } from 'hono';
+import { prismaDB } from '@/helpers/prisma';
 import type { Context } from 'hono';
-import { prismaDB } from '../../../helpers/prisma';
+import { Hono } from 'hono';
 
 const app = new Hono();
 

@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
-import user from './user';
 import records from './records';
+import user from './user';
 const app = new Hono();
 
 app.get('/', (c) => {

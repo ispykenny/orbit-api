@@ -1,0 +1,18 @@
+enum RecordType {
+  BLOOD_GLUCOSE
+  INSULIN
+  FOOD
+  EXERCISE
+  OTHER
+}
+
+model Record {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    Int
+  message   String
+  type      RecordType @default(OTHER)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}

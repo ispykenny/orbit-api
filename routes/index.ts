@@ -1,8 +1,8 @@
-import { Hono } from 'hono';
 import type { Context } from 'hono';
+import { Hono } from 'hono';
 import login from './login';
-import signUp from './sign-up';
 import refreshToken from './refresh-token';
+import signUp from './sign-up';
 const app = new Hono();
 
 app.get('/', (context: Context) => {

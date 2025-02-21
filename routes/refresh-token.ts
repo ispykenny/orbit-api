@@ -1,7 +1,7 @@
+import { prismaDB } from '@/helpers/prisma';
+import { generateAccessToken } from '@/helpers/token-generator';
 import { Hono, type Context } from 'hono';
 import jwt from 'jsonwebtoken';
-import { prismaDB } from '../helpers/prisma';
-import { generateAccessToken } from '../helpers/token-generator';
 
 const app = new Hono();
 

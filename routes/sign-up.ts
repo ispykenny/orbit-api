@@ -1,10 +1,6 @@
+import { validAuthUser } from '@/helpers/credential';
+import { prismaDB } from '@/helpers/prisma';
 import { Hono, type Context } from 'hono';
-import { prismaDB } from '../helpers/prisma';
-import {
-  validateEmail,
-  validatePassword,
-  validAuthUser,
-} from '../helpers/credential';
 
 const app = new Hono();
 
