@@ -16,7 +16,67 @@ app.post('/', async (context: Context) => {
   });
 
   return context.json({
-    message: 'Record created',
+    data: 'Record created',
+  });
+});
+
+app.get('/', async (context: Context) => {
+  const user = context.get('user');
+
+  const records = await prismaDB.record.findMany({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  return context.json({
+    records,
+  });
+});
+
+app.delete('/:id', async (context: Context) => {
+  const user = context.get('user');
+  const { id } = context.req.param();
+
+  try {
+    await prismaDB.record.delete({
+      where: { id: parseInt(id), userId: user.id },
+    });
+  } catch (error) {
+    return context.json(
+      {
+        data: 'Record not found',
+      },
+      404
+    );
+  }
+
+  return context.json({
+    data: 'Record deleted',
+  });
+});
+
+app.patch('/:id', async (context: Context) => {
+  const user = context.get('user');
+  const { id } = context.req.param();
+  const { message } = await context.req.json();
+
+  try {
+    await prismaDB.record.update({
+      where: { id: parseInt(id), userId: user.id },
+      data: { message },
+    });
+  } catch (error) {
+    return context.json(
+      {
+        data: 'Record not found',
+      },
+      404
+    );
+  }
+
+  return context.json({
+    data: 'Record updated',
   });
 });
 
