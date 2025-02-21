@@ -1,4 +1,4 @@
-# orbit-backend
+# orbit
 
 To install dependencies:
 

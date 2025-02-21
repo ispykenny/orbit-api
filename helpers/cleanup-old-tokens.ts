@@ -1,4 +1,4 @@
-import { prismaDB } from './prisma';
+import { prismaDB } from '@/helpers/prisma';
 
 export const cleanupOldTokens = async () => {
   try {
