@@ -1,5 +1,3 @@
-// Generate an Access Token with a short expiration time (e.g., 5 minutes)
-
 import jwt from 'jsonwebtoken';
 
 interface User {

@@ -8,30 +8,56 @@ interface JWTPayload {
 
 export const authValidation = (): MiddlewareHandler => {
   return async (context, next) => {
-    const authHeader = context.req.header('Authorization');
-    const token = authHeader?.split(' ')[1];
-    if (!token) return context.json({ status: 'unauthorized' }, 401);
+    // Extract token from Authorization header
+    const token = extractTokenFromHeader(context);
+    if (!token) {
+      return unauthorizedResponse(context);
+    }
 
     try {
-      const decoded = jwt.verify(
-        token,
-        process.env.ACCESS_SECRET as string
-      ) as JWTPayload;
-      if (!decoded || !decoded.email)
-        return context.json({ status: 'unauthorized' }, 401);
-      const user = await prismaDB.user.findUnique({
-        where: {
-          email: decoded.email,
-        },
-        select: {
-          id: true,
-        },
-      });
-      if (!user) return context.json({ status: 'unauthorized' }, 401);
+      // Verify and decode JWT token
+      const decoded = await verifyToken(token);
+      if (!decoded) {
+        return unauthorizedResponse(context);
+      }
+
+      // Validate user exists in database
+      const user = await validateUser(decoded.email);
+      if (!user) {
+        return unauthorizedResponse(context);
+      }
+
+      // Set user in context and continue
       context.set('user', user);
       await next();
     } catch (err) {
-      return context.json({ status: 'unauthorized' }, 401);
+      return unauthorizedResponse(context);
     }
   };
+};
+
+// Helper functions
+const extractTokenFromHeader = (context: any): string | null => {
+  const authHeader = context.req.header('Authorization');
+  return authHeader?.split(' ')[1] || null;
+};
+
+const verifyToken = async (token: string): Promise<JWTPayload | null> => {
+  const decoded = jwt.verify(
+    token,
+    Bun.env.ACCESS_SECRET as string
+  ) as JWTPayload;
+
+  return decoded && decoded.email ? decoded : null;
+};
+
+const validateUser = async (email: string) => {
+  return await prismaDB.user.findUnique({
+    where: { email },
+    select: { id: true },
+  });
+};
+
+const unauthorizedResponse = (context: any) => {
+  return context.json({ status: 'unauthorized' }, 401);
 };
