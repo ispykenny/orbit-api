@@ -6,13 +6,17 @@ enum RecordType {
   OTHER
 }
 
+// TODO: add image field (need S3 set up) incase user wants to add a reference image
 model Record {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  userId    Int
-  message   String
-  type      RecordType @default(OTHER)
-  user      User     @relation(fields: [userId], references: [id])
+  id             Int        @id @default(autoincrement())
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  userId         Int
+  value          Int        @default(0)
+  displayedValue String     @default("0")
+  message        String
+  type           RecordType @default(OTHER)
+  user           User       @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
