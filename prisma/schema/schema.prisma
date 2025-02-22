@@ -12,52 +12,44 @@ model User {
   id           Int          @id @default(autoincrement())
   email        String       @unique
   password     String
-  hasDexcom    Boolean      @default(false)
-  dexcomTokens DexcomToken?
-  readings     Readings[]
+  has_dexcom   Boolean      @default(false)
+  dexcom_token DexcomToken?
   records      Record[]
   tokens       Token[]
+  reset_tokens ResetToken[]
 }
 
 model Token {
-  id        Int      @id @default(autoincrement())
-  token     String   @unique
-  createdAt DateTime @default(now())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  created_at DateTime @default(now())
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
 
-  @@index([userId])
+  @@index([user_id])
 }
 
 model DexcomToken {
-  id                    Int      @id @default(autoincrement())
-  accessToken           String
-  refreshToken          String   @unique
-  expiresIn             Int
-  createdAt             DateTime @default(now())
-  userId                Int      @unique
-  transmitterGeneration String   @default("")
-  user                  User     @relation(fields: [userId], references: [id])
+  id            Int      @id @default(autoincrement())
+  access_token  String
+  refresh_token String   @unique
+  created_at    DateTime @default(now())
+  user_id       Int      @unique
+  dexcom_model  String   @default("")
+  user          User     @relation(fields: [user_id], references: [id])
 
-  @@index([userId])
+  @@index([user_id])
 }
 
-model Readings {
-  id                    Int     @id @default(autoincrement())
-  displayDevice         String?
-  displayTime           String
-  systemTime            String
-  recordId              String  @unique
-  transmitterGeneration String
-  transmitterId         String
-  transmitterTicks      Int
-  trend                 String
-  trendRate             Float
-  unit                  String
-  value                 Int
-  rateUnit              String
-  userId                Int
-  user                  User    @relation(fields: [userId], references: [id])
+model ResetToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique
+  created_at DateTime @default(now())
+  expires_at DateTime
+  used       Boolean  @default(false)
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [id])
 
-  @@index([userId])
+  @@index([user_id])
+  @@index([token])
 }

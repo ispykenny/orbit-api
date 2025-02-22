@@ -24,7 +24,7 @@ app.post('/', async (context: Context) => {
     const refreshToken = generateRefreshToken({ email });
 
     await prismaDB.token.create({
-      data: { token: refreshToken, userId: user.id },
+      data: { token: refreshToken, user_id: user.id },
     });
 
     return context.json(

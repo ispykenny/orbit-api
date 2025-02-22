@@ -2,21 +2,21 @@ enum RecordType {
   BLOOD_GLUCOSE
   INSULIN
   FOOD
-  EXERCISE
+  EXERCISE // Maybe calories burned?
   OTHER
 }
 
 // TODO: add image field (need S3 set up) incase user wants to add a reference image
 model Record {
-  id             Int        @id @default(autoincrement())
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt @default(now())
-  userId         Int
-  value          Int        @default(0)
-  displayedValue String     @default("0")
-  message        String
-  type           RecordType @default(OTHER)
-  user           User       @relation(fields: [userId], references: [id])
+  id              Int        @id @default(autoincrement())
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @default(now()) @updatedAt
+  user_id         Int
+  value           Int        @default(0)
+  message         String
+  reference_image String?
+  type            RecordType @default(OTHER)
+  user            User       @relation(fields: [user_id], references: [id])
 
-  @@index([userId])
+  @@index([user_id])
 }

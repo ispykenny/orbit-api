@@ -11,7 +11,7 @@ app.post('/', async (context: Context) => {
   await prismaDB.record.create({
     data: {
       message,
-      userId: user.id,
+      user_id: user.id,
     },
   });
 
@@ -25,7 +25,7 @@ app.get('/', async (context: Context) => {
 
   const records = await prismaDB.record.findMany({
     where: {
-      userId: user.id,
+      user_id: user.id,
     },
   });
 
@@ -40,7 +40,7 @@ app.delete('/:id', async (context: Context) => {
 
   try {
     await prismaDB.record.delete({
-      where: { id: parseInt(id), userId: user.id },
+      where: { id: parseInt(id), user_id: user.id },
     });
   } catch (error) {
     return context.json(
@@ -63,7 +63,7 @@ app.patch('/:id', async (context: Context) => {
 
   try {
     await prismaDB.record.update({
-      where: { id: parseInt(id), userId: user.id },
+      where: { id: parseInt(id), user_id: user.id },
       data: { message },
     });
   } catch (error) {
