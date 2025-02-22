@@ -51,5 +51,4 @@ model ResetToken {
   user       User     @relation(fields: [user_id], references: [id])
 
   @@index([user_id])
-  @@index([token])
 }
